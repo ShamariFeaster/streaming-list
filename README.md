@@ -1,3 +1,5 @@
+![Screenshot](movies-shows_site.png)
+
 ## Streaming List Tracker
 
 A simple PHP/MySQL app to keep track of movies, shows, franchises, or anything you're currently watching.
