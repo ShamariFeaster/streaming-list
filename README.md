@@ -16,6 +16,11 @@ That’s it. You should be able to open `index.php` in your browser and start ad
 
 If you run into any issues, double check your DB config or file permissions.
 
+### Docker
+To run the app with Docker, use the provided `Dockerfile` and `docker-compose.yml` which set up PHP with Apache and a MySQL database:
+
+`docker compose up --build`
+
 ---
 
 ### How to Use It
