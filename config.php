@@ -1,11 +1,13 @@
 <?php
 date_default_timezone_set('America/New_York');
-
-// Replace these with your actual database settings
-$host = 'localhost';
+//if using docker
+$host = 'mysql_db';
+//if using locally hosted
+//$host = '127.0.0.1';
 $db   = 'streaming_list';
-$user = 'your_db_user';
-$pass = 'your_db_password';
+//if using docker, below should match what's in docker_compose.yaml
+$user = 'user';
+$pass = 'password';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -18,5 +20,6 @@ $options = [
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
+     echo $e->getMessage();
      exit('Database connection failed.');
 }
