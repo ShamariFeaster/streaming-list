@@ -3,17 +3,17 @@
 include 'config.php'; 
 
 // Set the default sort field to 'title' and direction to 'asc'
-$sort_field = isset($_GET['sort']) ? $_GET['sort'] : 'title';
-$sort_direction = (isset($_GET['dir']) && $_GET['dir'] === 'desc') ? 'desc' : 'asc';
+//$sort_field = isset($_GET['sort']) ? $_GET['sort'] : 'title';
+//$sort_direction = (isset($_GET['dir']) && $_GET['dir'] === 'desc') ? 'desc' : 'asc';
 
 // Validate & sanitize the sort field
-$allowed_fields = ['title', 'type', 'streaming_platform', 'watched', 'rating', 'date_added', 'next_airing'];
-if (!in_array($sort_field, $allowed_fields)) {
-    $sort_field = 'title';
-}
+// $allowed_fields = ['title', 'type', 'streaming_platform', 'watched', 'rating', 'date_added', 'next_airing'];
+// if (!in_array($sort_field, $allowed_fields)) {
+//     $sort_field = 'title';
+// }
 
 // Fetch parent entries
-$parent_stmt = $pdo->prepare("SELECT * FROM media WHERE parent_id IS NULL ORDER BY $sort_field $sort_direction");
+$parent_stmt = $pdo->prepare("SELECT * FROM media WHERE parent_id IS NULL ORDER BY title asc");
 $parent_stmt->execute();
 $parent_list = $parent_stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -25,30 +25,51 @@ while ($child = $children_stmt->fetch(PDO::FETCH_ASSOC)) {
     $children_by_parent[$child['parent_id']][] = $child;
 }
 
+
+
+
+
+
+
 // Fetch currently watching items (watched IN (2,3))
 $currently_watching_stmt = $pdo->prepare("
     SELECT * FROM media 
     WHERE watched IN (2, 3)
-    ORDER BY $sort_field $sort_direction
+    ORDER BY title asc
 ");
 $currently_watching_stmt->execute();
 $currently_watching_list = $currently_watching_stmt->fetchAll(PDO::FETCH_ASSOC);
+$currWatchingJson = json_encode($currently_watching_list);
 
 // Fetch "Up Next" items (watched=4)
+//title and asc could be parameterized
 $up_next_stmt = $pdo->prepare("
     SELECT * FROM media
     WHERE watched = 4
-    ORDER BY $sort_field $sort_direction
+    ORDER BY title asc
 ");
 $up_next_stmt->execute();
 $up_next_list = $up_next_stmt->fetchAll(PDO::FETCH_ASSOC);
+$upNextJson = json_encode($up_next_list);
 
 // Fetch all parent options for the dropdown
-$all_parents_stmt = $pdo->prepare("SELECT id as 'value', title as 'name' FROM media WHERE parent_id IS NULL ORDER BY title ASC");
+$all_parents_stmt = $pdo->prepare("SELECT id as 'value', title as 'text' FROM media WHERE parent_id IS NULL ORDER BY title ASC");
 $all_parents_stmt->execute();
 $all_parents = $all_parents_stmt->fetchAll(PDO::FETCH_ASSOC);
-$parentJson = json_encode(all_parents);
+$all_parents[] = ['text' => 'No Parent', 'value' => '' ];
+$parentJson = json_encode($all_parents);
 
+?>
+<script>
+//all this to be passed into front-end data model in /js/TemplarModel.js
+var _currWatchingData = <?=$currWatchingJson;?>;
+_currWatchingVisibile = (currWatchingData.length > 0);
+var _upNextData = <?=$upNextJson;?>;
+_upNextVisibile = (upNextData.length > 0);
+var parentSelectData = <?=$parentJson;?>;
+</script>
+
+<?
 // Handle form submission for adding new entries
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_entry'])) {
     $title = $_POST['title'];

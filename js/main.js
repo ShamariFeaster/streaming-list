@@ -1,3 +1,4 @@
+
 function filterTable() {
     let searchBox = document.getElementById('searchBox').value.toLowerCase();
     let table = document.getElementById('mainTable');

@@ -9,6 +9,8 @@ include 'main.php';
     <title>Streaming List</title>
     <link rel="stylesheet" href="styles.css">
     <script src="/js/TemplarJS-0.11.min.js"></script>
+    <script src="/js/TemplarModel.js"></script>
+    <script src="/js/TemplarCustomAttributes.js"></script>
     <script src="/js/main.js"></script>
 </head>
 <body>
@@ -18,111 +20,65 @@ include 'main.php';
     <!-- Form for adding new entries -->
     <form method="POST">
         <input type="text" name="title" placeholder="Title" required>
-        <select name="type">
-            <option value="movie">Movie</option>
-            <option value="tv_show">TV Show</option>
-            <option value="franchise">Franchise</option>
-            <option value="series">Series</option>
-        </select>
-        <select name="platform">
-            <option value="AMC+">AMC+</option>
-            <option value="AppleTV">AppleTV</option>
-            <option value="Britbox">Britbox</option>
-            <option value="Discovery+">Discovery+</option>
-            <option value="Hulu">Hulu</option>
-            <option value="MAX">MAX</option>
-            <option value="MGM+">MGM+</option>
-            <option value="Netflix">Netflix</option>
-            <option value="Paramount+">Paramount+</option>
-            <option value="PBS Masterpiece">PBS Masterpiece</option>
-            <option value="Peacock">Peacock</option>
-            <option value="Prime">Prime</option>
-            <option value="Roku">Roku</option>
-            <option value="Showtime">Showtime</option>
-            <option value="Tubi">Tubi</option>
-        </select>
-        <select name="parent_id">
-            <option value="">No Parent</option>
-            <?php foreach ($all_parents as $parent): ?>
-                <option value="<?= $parent['value'] ?>">
-                    <?= htmlspecialchars($parent['name']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+        <select name="type">{{Media.type}}</select>
+        <select name="platform">{{Media.platform}}</select>     
+        <select name="parent_id">{{Media.parentSelect}}</select>
         <button type="submit" name="add_entry" class="action-button">Add</button>
     </form>
-
+count <?=$currWatchingCnt?>
     <!-- Table for Currently Watching Items -->
-    <?php if (count($currently_watching_list) > 0): ?>
+    <div showIf="{{Media.currWatchingVisibile}}">
         <h2>Currently Watching</h2>
         <table>
             <thead>
                 <tr>
-                    <th><a href="<?= get_sort_link('title', $sort_field, $sort_direction) ?>">Title</a></th>
-                    <th><a href="<?= get_sort_link('type', $sort_field, $sort_direction) ?>">Type</a></th>
-                    <th><a href="<?= get_sort_link('streaming_platform', $sort_field, $sort_direction) ?>">Streaming Platform</a></th>
-                    <th><a href="<?= get_sort_link('watched', $sort_field, $sort_direction) ?>">Watched</a></th>
-                    <th><a href="<?= get_sort_link('rating', $sort_field, $sort_direction) ?>">Rating</a></th>
-                    <th><a href="<?= get_sort_link('next_airing', $sort_field, $sort_direction) ?>">Next Airing</a></th>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Streaming Platform</th>
+                    <th>Watched</th>
+                    <th>Rating</th>
+                    <th>Next Airing</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($currently_watching_list as $media): ?>
-                    <tr>
-                        <td><a href="details.php?id=<?= $media['id'] ?>"><?= htmlspecialchars($media['title']) ?></a></td>
-                        <td><?= htmlspecialchars($media['type']) ?></td>
-                        <td><?= htmlspecialchars($media['streaming_platform']) ?></td>
-                        <td><?= display_watched_status($media['watched']) ?></td>
-                        <td><?= display_stars($media['rating']) ?></td>
-                        <td>
-                            <?= !empty($media['next_airing'])
-                                ? date('Y-m-d', strtotime($media['next_airing']))
-                                : '-'
-                            ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                <tr data-apl-repeat="{{Media.currWatchingRepeat}}">
+                    <td><a href="details.php?id={{id}}">{{title}}</a></td>
+                    <td>{{type}}</td>
+                    <td>{{streaming_platform}}</td>
+                    <td>{{watched}}</td>
+                    <td>{{rating}}</td>
+                    <td>{{next_airing}}</td>
+                </tr>
             </tbody>
         </table>
-    <?php endif; ?>
+    </div>
 
     <!-- New 'Up Next' Table (watched=4) -->
-    <?php if (count($up_next_list) > 0): ?>
+    <div showIf="{{Media.upNextVisibile}}">
         <h2>Up Next</h2>
         <table>
             <thead>
                 <tr>
-                    <th><a href="<?= get_sort_link('title', $sort_field, $sort_direction) ?>">Title</a></th>
-                    <th><a href="<?= get_sort_link('type', $sort_field, $sort_direction) ?>">Type</a></th>
-                    <th><a href="<?= get_sort_link('streaming_platform', $sort_field, $sort_direction) ?>">Streaming Platform</a></th>
-                    <th><a href="<?= get_sort_link('watched', $sort_field, $sort_direction) ?>">Watched</a></th>
-                    <th><a href="<?= get_sort_link('rating', $sort_field, $sort_direction) ?>">Rating</a></th>
-                    <th><a href="<?= get_sort_link('next_airing', $sort_field, $sort_direction) ?>">Next Airing</a></th>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Streaming Platform</th>
+                    <th>Watched</th>
+                    <th>Rating</th>
+                    <th>Next Airing</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($up_next_list as $media): ?>
-                    <tr>
-                        <td>
-                            <a href="details.php?id=<?= $media['id'] ?>">
-                                <?= htmlspecialchars($media['title']) ?>
-                            </a>
-                        </td>
-                        <td><?= htmlspecialchars($media['type']) ?></td>
-                        <td><?= htmlspecialchars($media['streaming_platform']) ?></td>
-                        <td><?= display_watched_status($media['watched']) ?></td>
-                        <td><?= display_stars($media['rating']) ?></td>
-                        <td>
-                            <?= !empty($media['next_airing'])
-                                ? date('Y-m-d', strtotime($media['next_airing']))
-                                : '-'
-                            ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                <tr data-apl-repeat="{{Media.upNextRepeat}}">
+                    <td><a href="details.php?id={{id}}">{{title}}</a></td>
+                    <td>{{type}}</td>
+                    <td>{{streaming_platform}}</td>
+                    <td>{{watched}}</td>
+                    <td>{{rating}}</td>
+                    <td>{{next_airing}}</td>
+                </tr>
             </tbody>
         </table>
-    <?php endif; ?>
+    </div>
 
     <!-- Search and Platform Filters -->
     <div class="filter-row">
@@ -153,12 +109,12 @@ include 'main.php';
     <table id="mainTable">
         <thead>
             <tr>
-                <th><a href="<?= get_sort_link('title', $sort_field, $sort_direction) ?>">Title</a></th>
-                <th><a href="<?= get_sort_link('type', $sort_field, $sort_direction) ?>">Type</a></th>
-                <th><a href="<?= get_sort_link('streaming_platform', $sort_field, $sort_direction) ?>">Streaming Platform</a></th>
-                <th><a href="<?= get_sort_link('watched', $sort_field, $sort_direction) ?>">Watched</a></th>
-                <th><a href="<?= get_sort_link('rating', $sort_field, $sort_direction) ?>">Rating</a></th>
-                <th><a href="<?= get_sort_link('date_added', $sort_field, $sort_direction) ?>">Date Added</a></th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Streaming Platform</th>
+                <th>Watched</th>
+                <th>Rating</th>
+                <th>Next Airing</th>
             </tr>
         </thead>
         <tbody>
