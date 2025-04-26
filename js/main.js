@@ -48,6 +48,7 @@ function resetFilters() {
 }
 
 function toggleChildren(parentId) {
+    //modify visibility in data model
     let children = document.getElementsByClassName('child-of-' + parentId);
     for (let i = 0; i < children.length; i++) {
         children[i].style.display = 

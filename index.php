@@ -15,6 +15,10 @@ include 'main.php';
 </head>
 <body>
 <div class="container">
+<? 
+
+
+?>
     <h1>Movies and TV Shows</h1>
 
     <!-- Form for adding new entries -->
@@ -25,7 +29,7 @@ include 'main.php';
         <select name="parent_id">{{Media.parentSelect}}</select>
         <button type="submit" name="add_entry" class="action-button">Add</button>
     </form>
-count <?=$currWatchingCnt?>
+
     <!-- Table for Currently Watching Items -->
     <div showIf="{{Media.currWatchingVisibile}}">
         <h2>Currently Watching</h2>
@@ -104,17 +108,17 @@ count <?=$currWatchingCnt?>
         <button class="streaming-filter" onclick="applyFilter('', 'Not Watched')">Not Watched</button>
     </div>
 
-    <!-- Table to display the list of movies and TV shows -->
-    <h2>All Media</h2>
+     <!-- Table to display the list of movies and TV shows -->
+     <h2>All Media</h2>
     <table id="mainTable">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Streaming Platform</th>
-                <th>Watched</th>
-                <th>Rating</th>
-                <th>Next Airing</th>
+                <th><a href="<?= get_sort_link('title', $sort_field, $sort_direction) ?>">Title</a></th>
+                <th><a href="<?= get_sort_link('type', $sort_field, $sort_direction) ?>">Type</a></th>
+                <th><a href="<?= get_sort_link('streaming_platform', $sort_field, $sort_direction) ?>">Streaming Platform</a></th>
+                <th><a href="<?= get_sort_link('watched', $sort_field, $sort_direction) ?>">Watched</a></th>
+                <th><a href="<?= get_sort_link('rating', $sort_field, $sort_direction) ?>">Rating</a></th>
+                <th><a href="<?= get_sort_link('date_added', $sort_field, $sort_direction) ?>">Date Added</a></th>
             </tr>
         </thead>
         <tbody>
@@ -155,6 +159,14 @@ count <?=$currWatchingCnt?>
             <?php endforeach; ?>
         </tbody>
     </table>
+
+    <div class="TEST" data-apl-repeat="{{Media.allMedia}}">
+        Parent : {{title}} , {{streaming_platform}}
+        <div data-apl-repeat="{{$item}}.children">
+            Child {{title}}  , {{streaming_platform}}
+        </div>
+    </div>
 </div>
+
 </body>
 </html>

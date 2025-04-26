@@ -15,7 +15,14 @@ include 'config.php';
 // Fetch parent entries
 $parent_stmt = $pdo->prepare("SELECT * FROM media WHERE parent_id IS NULL ORDER BY title asc");
 $parent_stmt->execute();
-$parent_list = $parent_stmt->fetchAll(PDO::FETCH_ASSOC);
+//$parent_list = $parent_stmt->fetch(PDO::FETCH_ASSOC);
+$map = [];
+$parent_list = [];
+while ($row = $parent_stmt->fetch(PDO::FETCH_ASSOC)) {
+    $row['children'] = [];
+    $map[ $row['id'] ] = $row;
+    $parent_list[] = $row;
+}
 
 // Fetch child entries
 $children_stmt = $pdo->prepare("SELECT * FROM media WHERE parent_id IS NOT NULL ORDER BY title ASC");
@@ -23,13 +30,12 @@ $children_stmt->execute();
 $children_by_parent = [];
 while ($child = $children_stmt->fetch(PDO::FETCH_ASSOC)) {
     $children_by_parent[$child['parent_id']][] = $child;
+    $map[ $child['parent_id'] ]['children'][] = $child;
 }
 
-
-
-
-
-
+//i feel like there's a way to get this in pure sql.....
+$map = array_values($map);
+$allEntriesWithChildrenJSON = json_encode($map);
 
 // Fetch currently watching items (watched IN (2,3))
 $currently_watching_stmt = $pdo->prepare("
@@ -59,17 +65,6 @@ $all_parents = $all_parents_stmt->fetchAll(PDO::FETCH_ASSOC);
 $all_parents[] = ['text' => 'No Parent', 'value' => '' ];
 $parentJson = json_encode($all_parents);
 
-?>
-<script>
-//all this to be passed into front-end data model in /js/TemplarModel.js
-var _currWatchingData = <?=$currWatchingJson;?>;
-_currWatchingVisibile = (currWatchingData.length > 0);
-var _upNextData = <?=$upNextJson;?>;
-_upNextVisibile = (upNextData.length > 0);
-var parentSelectData = <?=$parentJson;?>;
-</script>
-
-<?
 // Handle form submission for adding new entries
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_entry'])) {
     $title = $_POST['title'];
@@ -121,3 +116,15 @@ function display_watched_status($watched) {
 }
 
 ?>
+
+<script>
+//all this to be passed into front-end data model in /js/TemplarModel.js
+var _currWatchingData = <?=$currWatchingJson;?>;
+_currWatchingVisibile = (_currWatchingData.length > 0);
+var _upNextData = <?=$upNextJson;?>;
+_upNextVisibile = (_upNextData.length > 0);
+var parentSelectData = <?=$parentJson;?>;
+var _allEntriesWithChildren = <?=$allEntriesWithChildrenJSON;?>;
+
+
+</script>
