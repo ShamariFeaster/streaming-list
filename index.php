@@ -8,19 +8,21 @@ include 'main.php';
     <meta charset="UTF-8">
     <title>Streaming List</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/lib/twitter-bootstrap-5.3.5.css">
     <script src="/js/TemplarJS-0.11.min.js"></script>
     <script src="/js/TemplarModel.js"></script>
+    <script src="/js/Components/ItemTable.js"></script>
     <script src="/js/TemplarCustomAttributes.js"></script>
     <script src="/js/main.js"></script>
 </head>
 <body>
-<div class="container">
+<div class="app-container">
 <? 
 
 
 ?>
     <h1>Movies and TV Shows</h1>
-
+    
     <!-- Form for adding new entries -->
     <form method="POST">
         <input type="text" name="title" placeholder="Title" required>
@@ -29,60 +31,21 @@ include 'main.php';
         <select name="parent_id">{{Media.parentSelect}}</select>
         <button type="submit" name="add_entry" class="action-button">Add</button>
     </form>
-
     <!-- Table for Currently Watching Items -->
-    <div showIf="{{Media.currWatchingVisibile}}">
-        <h2>Currently Watching</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Streaming Platform</th>
-                    <th>Watched</th>
-                    <th>Rating</th>
-                    <th>Next Airing</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-apl-repeat="{{Media.currWatchingRepeat}}">
-                    <td><a href="details.php?id={{id}}">{{title}}</a></td>
-                    <td>{{type}}</td>
-                    <td>{{streaming_platform}}</td>
-                    <td>{{watched}}</td>
-                    <td>{{rating}}</td>
-                    <td>{{next_airing}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- New 'Up Next' Table (watched=4) -->
-    <div showIf="{{Media.upNextVisibile}}">
-        <h2>Up Next</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Streaming Platform</th>
-                    <th>Watched</th>
-                    <th>Rating</th>
-                    <th>Next Airing</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-apl-repeat="{{Media.upNextRepeat}}">
-                    <td><a href="details.php?id={{id}}">{{title}}</a></td>
-                    <td>{{type}}</td>
-                    <td>{{streaming_platform}}</td>
-                    <td>{{watched}}</td>
-                    <td>{{rating}}</td>
-                    <td>{{next_airing}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <ItemTable 
+        isVisible="{{Media.upNextVisibile}}" 
+        rowSource="{{Media.upNextRepeat}}"
+    >
+        Currently Watching
+    </ItemTable>
+    
+    <!-- Table for Currently Watching Items -->
+    <ItemTable 
+        isVisible="{{Media.currWatchingVisibile}}" 
+        rowSource="{{Media.currWatchingRepeat}}"
+    >
+        Up Next
+    </ItemTable>
 
     <!-- Search and Platform Filters -->
     <div class="filter-row">

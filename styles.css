@@ -11,13 +11,14 @@ body {
     color: #fdf6e3; /* Light text for contrast */
 }
 
-.container {
+.app-container {
     width: 100%;
     max-width: 1200px;
     background-color: #073642; /* Solarized Dark Lighter */
     padding: 30px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
+    color : white; 
 }
 
 /* Headings */
@@ -337,4 +338,31 @@ td a:hover {
   display: flex;
   gap: 4px;
   /* You can also add margin-top or margin-bottom if needed */
+}
+
+.table-header, .table-body {
+    color : white;
+}
+
+.table-header{
+    background-color: #268bd2;
+    color: white;
+    border-right: 1px solid #586e75;
+    padding: 12px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #586e75;
+    border-radius: 8px;
+}
+
+.table-body div{
+    padding: 12px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-body div.row:nth-child(even){
+    background-color: #002b36;
 }
