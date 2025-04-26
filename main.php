@@ -20,6 +20,8 @@ $map = [];
 $parent_list = [];
 while ($row = $parent_stmt->fetch(PDO::FETCH_ASSOC)) {
     $row['children'] = [];
+    $row['hasChildren'] = false;
+    $row['showChildren'] = false;
     $map[ $row['id'] ] = $row;
     $parent_list[] = $row;
 }
@@ -31,6 +33,7 @@ $children_by_parent = [];
 while ($child = $children_stmt->fetch(PDO::FETCH_ASSOC)) {
     $children_by_parent[$child['parent_id']][] = $child;
     $map[ $child['parent_id'] ]['children'][] = $child;
+    $map[ $child['parent_id'] ]['hasChildren'] = true;
 }
 
 //i feel like there's a way to get this in pure sql.....

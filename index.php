@@ -72,63 +72,47 @@ include 'main.php';
     </div>
 
      <!-- Table to display the list of movies and TV shows -->
-     <h2>All Media</h2>
-    <table id="mainTable">
-        <thead>
-            <tr>
-                <th><a href="<?= get_sort_link('title', $sort_field, $sort_direction) ?>">Title</a></th>
-                <th><a href="<?= get_sort_link('type', $sort_field, $sort_direction) ?>">Type</a></th>
-                <th><a href="<?= get_sort_link('streaming_platform', $sort_field, $sort_direction) ?>">Streaming Platform</a></th>
-                <th><a href="<?= get_sort_link('watched', $sort_field, $sort_direction) ?>">Watched</a></th>
-                <th><a href="<?= get_sort_link('rating', $sort_field, $sort_direction) ?>">Rating</a></th>
-                <th><a href="<?= get_sort_link('date_added', $sort_field, $sort_direction) ?>">Date Added</a></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($parent_list as $parent): ?>
-                <tr>
-                    <td>
-                        <a href="details.php?id=<?= $parent['id'] ?>">
-                            <?= htmlspecialchars($parent['title']) ?>
-                        </a>
-                        <?php if (isset($children_by_parent[$parent['id']])): ?>
-                            <button class="toggle-children" onclick="toggleChildren(<?= $parent['id'] ?>)">
-                                Show/Hide Children
-                            </button>
-                        <?php endif; ?>
-                    </td>
-                    <td><?= htmlspecialchars($parent['type']) ?></td>
-                    <td><?= htmlspecialchars($parent['streaming_platform']) ?></td>
-                    <td><?= display_watched_status($parent['watched']) ?></td>
-                    <td><?= display_stars($parent['rating']) ?></td>
-                    <td><?= htmlspecialchars($parent['date_added']) ?></td>
-                </tr>
-                <?php if (isset($children_by_parent[$parent['id']])): ?>
-                    <?php foreach ($children_by_parent[$parent['id']] as $child): ?>
-                        <tr class="child-of-<?= $parent['id'] ?>" style="display: none;">
-                            <td>
-                                <a href="details.php?id=<?= $child['id'] ?>">
-                                    <?= htmlspecialchars($child['title']) ?>
-                                </a>
-                            </td>
-                            <td><?= htmlspecialchars($child['type']) ?></td>
-                            <td><?= htmlspecialchars($child['streaming_platform']) ?></td>
-                            <td><?= display_watched_status($child['watched']) ?></td>
-                            <td><?= display_stars($child['rating']) ?></td>
-                            <td><?= htmlspecialchars($child['date_added']) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <div>
+        <h2>All Media</h2>
+        <div id="item-table-wrapper" class="container">
+            <div class="row table-header" >
+                <div class="col-4">Title</div>
+                <div class="col-1">Type</div>
+                <div class="col-2">Streaming Platform</div>
+                <div class="col-1">Watched</div>
+                <div class="col-2">Rating</div>
+                <div class="col-2">Next Airing</div>
+            </div>
+            <div class="table-body">
+                <div id="item-repeater-parent" class="row" data-apl-repeat="{{Media.allMedia}}">
 
-    <div class="TEST" data-apl-repeat="{{Media.allMedia}}">
-        Parent : {{title}} , {{streaming_platform}}
-        <div data-apl-repeat="{{$item}}.children">
-            Child {{title}}  , {{streaming_platform}}
+                    <div class="col-4"><a href="details.php?id={{id}}">{{title}}</a>
+                    <button showIf="{{hasChildren}}" class="toggle-children" onclick="toggleChildren({{id}})">
+                        Show/Hide Children
+                    </button>
+
+                    </div>
+                    <div class="col-1">{{type}}</div>
+                    <div class="col-2">{{streaming_platform}}</div>
+                    <div class="col-1">{{watched}}</div>
+                    <div class="col-2">{{rating}}</div>
+                    <div class="col-2">{{next_airing}}</div>
+
+                    <div showIf="{{showChildren}}" class="row" data-apl-repeat="{{$item}}.children">
+                        <div class="col-4"><a href="details.php?id={{id}}">{{title}}</a></div>
+                        <div class="col-1">{{type}}</div>
+                        <div class="col-2">{{streaming_platform}}</div>
+                        <div class="col-1">{{watched}}</div>
+                        <div class="col-2">{{rating}}</div>
+                        <div class="col-2">{{next_airing}}</div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
+
+    
 </div>
 
 </body>

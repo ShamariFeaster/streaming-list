@@ -49,10 +49,12 @@ function resetFilters() {
 
 function toggleChildren(parentId) {
     //modify visibility in data model
-    let children = document.getElementsByClassName('child-of-' + parentId);
-    for (let i = 0; i < children.length; i++) {
-        children[i].style.display = 
-            (children[i].style.display === 'none' || children[i].style.display === '') 
-            ? 'table-row' : 'none';
+    MediaModel = Templar.getModel('Media');
+    let indexOfParent = MediaModel.allMedia.findIndex( (item) =>  item.id == parentId);
+    if(indexOfParent > -1){
+        let currVizState = MediaModel.allMedia[indexOfParent].showChildren;
+        MediaModel.allMedia[indexOfParent].showChildren = !currVizState;
+        MediaModel.update('allMedia');
     }
+    
 }
