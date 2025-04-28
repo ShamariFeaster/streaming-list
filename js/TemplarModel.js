@@ -2,6 +2,14 @@ let a =_upNextData[0];
 _upNextData.push(a);
 upNextRepeat = _upNextData;
 Templar.dataModel('Media', {
+    columns :[
+        {displayName : 'Title', name : 'title', colWidth : '4'},
+        {displayName : 'Type', name : 'type', colWidth : '1'},
+        {displayName : 'Streaming Platform', name : 'streaming_platform', colWidth : '2'},
+        {displayName : 'Watched', name : 'watched', colWidth : '1'},
+        {displayName : 'Rating', name : 'rating', colWidth : '2'}, 
+        {displayName : 'Next Airing', name : 'next_airing', colWidth : '2'}
+    ],
     type : [
         {value : 'movie', text : 'Movie'},
         {value : 'tv_show', text : 'TV Show'},
