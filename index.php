@@ -9,6 +9,7 @@ include 'main.php';
     <title>Streaming List</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="/lib/twitter-bootstrap-5.3.5.css">
+    <!-- github.com/ShamariFeaster/Templar -->
     <script src="/js/TemplarJS-0.11.min.js"></script>
     <script src="/js/TemplarModel.js"></script>
     <script src="/js/Components/ItemTable.js"></script>
@@ -49,16 +50,14 @@ include 'main.php';
     <div class="filter-buttons">
         <button class="streaming-filter" onclick="resetFilters()">All</button>
         
-        <button data-apl-repeat="{{Media.platform}}" 
-                class="streaming-filter" 
-                onclick="applyFilter('{{text}}')">{{text}}</button>      
+        <button data-apl-repeat="{{Media.platform}}" class="streaming-filter" onclick="applyFilter('{{text}}')">{{text}}</button>      
     </div>
 
      <!-- Table to display the list of movies and TV shows -->
     <div>
         <h2>All Media</h2>
         <div id="item-table-wrapper" class="container">
-            <ColumnHeader></ColumnHeader>
+            <ColumnHeader sortAttribute="{{Media.attributeToSort}}"></ColumnHeader>
             <div class="table-body">
                 <div id="item-repeater-parent" class="row" data-apl-repeat="{{Media.allMedia}}">
 

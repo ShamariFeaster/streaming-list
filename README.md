@@ -1,5 +1,9 @@
 ![Screenshot](movies-shows_site.png)
 
+This is a refactor of the original project to a MVC-based design. This allows the UI
+to be much more flexible to be be modified. It also, IMO, simplifies the codebase. There's also some improvements to the usibility via some self-documenting code, particularly in config.php
+
+
 ## Streaming List Tracker
 
 A simple PHP/MySQL app to keep track of movies, shows, franchises, or anything you're currently watching.
